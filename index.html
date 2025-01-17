@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +10,16 @@
 </head>
 <body ng-app="customerApp">
     <div class="container">
+        <!-- Navigation Links -->
+        <nav>
+            <a href="#/customers" class="btn btn-primary">Customer List</a> 
+            <a href="#/" class="btn btn-secondary">Dashboard</a>
+        </nav>
+
+        <!-- This is where the routed content will be injected -->
         <div ng-view></div>
     </div>
+
     <!-- AngularJS -->
     <script src="node_modules/angular/angular.min.js"></script>
     <script src="node_modules/angular-route/angular-route.min.js"></script>

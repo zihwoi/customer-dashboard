@@ -4,24 +4,16 @@ angular
 
         //Data: Customer List
         $scope.customers = [
-            { name: 'John Doe', city: 'New York', status: 'Active' },
-            { name: 'Jane Smith', city: 'Los Angeles', status: 'Inactive' },
-            { name: 'Sam Wilson', city: 'Chicago', status: 'Active' }
+            { id: 1, name: 'John Doe', email: 'john@example.com', city: 'New York' },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', city: 'Los Angeles' },
+            { id: 3, name: 'Sam Wilson', email: 'sam@example.com', city: 'Chicago' },
+            { id: 4, name: 'Lucy Brown', email: 'lucy@example.com', city: 'New York' },
+            { id: 5, name: 'Ethan Green', email: 'ethan@example.com', city: 'Los Angeles' }
+        
         ];
 
-        // Search functionality
-        $scope.search = function (query) {
-            return $scope.customers.filter(function (customer) {
-                return customer.name.toLowerCase().includes(query.toLowerCase());
-            });
-        };
-
-        // Filter functionality 
-        $scope.filterByCity = function (city) {
-            return $scope.customers.filter(function (customer) {
-                return customer.city === city;
-            });
-        };
+        $scope.searchQuery = ''; // For the search input field
+        $scope.selectedCity = ''; // For the city dropdown
 
         // Add customer
         $scope.addCustomer = function (customer) {
