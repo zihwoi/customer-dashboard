@@ -1,5 +1,5 @@
 angular
-    .module('customerApp', [])
+    .module('customerApp')
     .controller('CustomerController', function ($scope) {
 
         //Data: Customer List

@@ -1,10 +1,10 @@
 angular
     .module('customerApp', ['ngRoute'])
-    .config(['$routeProvided', function($routeProvider) {
+    .config(['$routeProvider', function($routeProvider) {
         $routeProvider
             .when('/', {    
                 templateUrl: 'app/views/dashboard.html',
-                controller: 'MainController'
+                controller: 'CustomerController'
             })
             .when('/customers', {
                 templateUrl: 'app/views/customer-list.html',
