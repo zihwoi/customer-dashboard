@@ -8,10 +8,11 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
+
 <body ng-app="customerApp">
     <div class="container">
         <!-- Navigation Links -->
-        <nav>
+        <nav class="my-3">
             <a href="#/customers" class="btn btn-primary">Customer List</a> 
             <a href="#/" class="btn btn-secondary">Dashboard</a>
         </nav>
@@ -25,5 +26,7 @@
     <script src="node_modules/angular-route/angular-route.min.js"></script>
     <script src="app/app.module.js"></script>
     <script src="app/app.routes.js"></script>
+    <script src="app/controllers/main.controller.js"></script> 
+    <script src="app/controllers/customer.controller.js"></script>
 </body>
 </html>
