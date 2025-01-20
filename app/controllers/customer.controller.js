@@ -13,7 +13,16 @@ angular
         ];
 
         $scope.resetFilters = function () {
-            $scope.searchQuery = ''; // For the search input field
+            $scope.searchQuery = ''; // To bind with the search input field
+
+            $scope.filteredCustomers = function () {
+                return $scope.customers.filter(function (customer) {
+                    return customer.name.toLowerCase().includes($scope.searchQuery.toLowerCase()) ||
+                        customer.email.toLowerCase().includes($scope.searchQuery.toLowerCase()) ||
+                        customer.city.toLowerCase().includes($scope.searchQuery.toLowerCase());
+                });
+            };
+
             $scope.selectedCity = ''; // For the city dropdown
         };
 

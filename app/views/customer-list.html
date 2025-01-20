@@ -3,7 +3,7 @@
 
     <!-- Search Bar -->
     <div class="mb-3">
-        <input type="text" ng-model="searchQuery" placeholder="Search by name" class="form-control" />
+        <input type="text" class="form-control" ng-model="searchQuery" placeholder="Search by name, email, or city">
     </div>
 
     <!-- Filter by City -->
@@ -48,6 +48,10 @@
                 <td>{{ customer.name }}</td>
                 <td>{{ customer.email }}</td>
                 <td>{{ customer.city }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm" ng-click="editCustomer(customer)">Edit</button>
+                    <button class="btn btn-danger btn-sm" ng-click="deleteCustomer(customer)">Delete</button>
+                </td>
             </tr>
         </tbody>
     </table>

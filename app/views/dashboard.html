@@ -8,42 +8,28 @@
     </div>
 </div>
 
-<!-- <div ng-controller="CustomerController"> -->
+<div ng-controller="CustomerController">
 
     <!-- Search Bar -->
-    <!-- <div class="mb-3">
-        <input type="text" ng-model="searchQuery" placeholder="Search by name" class="form-control" />
-    </div> -->
+    <div class="mb-3">
+        <input type="text" class="form-control" ng-model="searchQuery" placeholder="Search by name, email, or city">
+    </div>
 
     <!-- Filter by City -->
-    <!-- <div class="mb-3">
+    <div class="mb-3">
         <select ng-model="selectedCity" class="form-control">
             <option value="">Select City</option>
             <option ng-repeat="city in ['New York', 'Los Angeles', 'Chicago']" value="{{city}}">{{city}}</option>
         </select>
-    </div> -->
+    </div>
 
     <!-- Reset Filters Button -->
-    <!-- <div class="mb-3">
+    <div class="mb-3">
         <button class="btn btn-secondary" ng-click="resetFilters()">Reset Filters</button>
-    </div> -->
+    </div>
 
-    
-    <!-- Add Customer Form -->
-    <!-- <form class="mb-3" ng-submit="addCustomer(newCustomer)">
-        <input type="text" ng-model="newCustomer.name" placeholder="Name" class="form-control mb-1" />
-        <input type="email" ng-model="newCustomer.email" placeholder="Email" class="form-control mb-1" />
-        <select ng-model="newCustomer.city" class="form-control mb-1">
-            <option value="">Select City</option>
-            <option value="New York">New York</option>
-            <option value="Los Angeles">Los Angeles</option>
-            <option value="Chicago">Chicago</option>
-        </select>
-        <button type="submit" class="btn btn-primary">Add Customer</button>
-    </form> -->
 
-    <!-- Customer Table -->
-    <!-- <table class="table table-bordered">
+    <table class="table table-bordered">
         <thead>
             <tr>
                 <th>ID</th>
@@ -60,5 +46,5 @@
                 <td>{{ customer.city }}</td>
             </tr>
         </tbody>
-    </table> -->
+    </table>
 </div>

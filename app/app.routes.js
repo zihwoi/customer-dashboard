@@ -1,14 +1,24 @@
-angular
-    .module('customerApp', ['ngRoute'])
-    .config(['$routeProvider', function($routeProvider) {
+angular.module('customerApp')
+    .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
         $routeProvider
-            .when('/', {    
+            .when('/', {
                 templateUrl: 'app/views/dashboard.html',
-                controller: 'MainController' // MainController for the dashboard
+                controller: 'MainController'
             })
             .when('/customers', {
                 templateUrl: 'app/views/customer-list.html',
-                controller: 'CustomerController' // CustomerController for the customer list
+                controller: 'CustomerController'
             })
             .otherwise({ redirectTo: '/' });
+
+        // HTML5 Mode Configuration
+        $locationProvider.html5Mode({
+            enabled: true,
+            requireBase: true
+        });
+    }])
+    .controller('NavController', ['$scope', '$location', function($scope, $location) {
+        $scope.isActive = function(viewLocation) {
+            return viewLocation === $location.path();
+        };
     }]);
