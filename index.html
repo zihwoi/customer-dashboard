@@ -2,26 +2,29 @@
 <html lang="en" ng-app="customerApp">
 
 <head>
-    <base href="/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Dashboard</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
 
 <body>
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">Customer App</a>
-            <div class="collapse navbar-collapse">
+            <a class="navbar-brand" href="#/">Customer App</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="/" ng-class="{ active: isActive('/') }">Dashboard</a>
+                        <a class="nav-link" href="#/" ng-class="{ active: isActive('/') }">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/customers" ng-class="{ active: isActive('/customers') }">Customer List</a>
+                        <a class="nav-link" href="#/customers" ng-class="{ active: isActive('/customers') }">Customer List</a>
                     </li>
                 </ul>
             </div>
@@ -36,6 +39,7 @@
     <!-- Scripts -->
     <script src="node_modules/angular/angular.min.js"></script>
     <script src="node_modules/angular-route/angular-route.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app/app.module.js"></script>
     <script src="app/app.routes.js"></script>
     <script src="app/controllers/main.controller.js"></script> 

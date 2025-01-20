@@ -2,42 +2,172 @@ angular
     .module('customerApp')
     .controller('CustomerController', ['$scope', function ($scope) {
 
-        //Data: Customer List
-        $scope.customers = [
-            { id: 1, name: 'John Doe', email: 'john@example.com', city: 'New York' },
-            { id: 2, name: 'Jane Smith', email: 'jane@example.com', city: 'Los Angeles' },
-            { id: 3, name: 'Sam Wilson', email: 'sam@example.com', city: 'Chicago' },
-            { id: 4, name: 'Lucy Brown', email: 'lucy@example.com', city: 'New York' },
-            { id: 5, name: 'Ethan Green', email: 'ethan@example.com', city: 'Los Angeles' }
+        var storedCustomers = localStorage.getItem('customers');
 
+        // Data: Customer List
+        $scope.customers = storedCustomers ? JSON.parse(storedCustomers) : [
+            { id: 1, name: 'John Doe', email: 'john@example.com', city: 'New York', status: 'active', registrationDate: new Date('2024-01-15') },
+            { id: 2, name: 'Jane Smith', email: 'jane@example.com', city: 'Los Angeles', status: 'active', registrationDate: new Date('2024-01-16') },
+            { id: 3, name: 'Sam Wilson', email: 'sam@example.com', city: 'Chicago', status: 'inactive', registrationDate: new Date('2024-01-17') },
+            { id: 4, name: 'Lucy Brown', email: 'lucy@example.com', city: 'New York', status: 'active', registrationDate: new Date('2024-01-18') },
+            { id: 5, name: 'Ethan Green', email: 'ethan@example.com', city: 'Los Angeles', status: 'inactive', registrationDate: new Date('2024-01-19') }
         ];
 
-        $scope.resetFilters = function () {
-            $scope.searchQuery = ''; // To bind with the search input field
+        // Convert stored dates back to Date objects
+        $scope.customers.forEach(customer => {
+            customer.registrationDate = new Date(customer.registrationDate);
+        });
 
-            $scope.filteredCustomers = function () {
-                return $scope.customers.filter(function (customer) {
-                    return customer.name.toLowerCase().includes($scope.searchQuery.toLowerCase()) ||
-                        customer.email.toLowerCase().includes($scope.searchQuery.toLowerCase()) ||
-                        customer.city.toLowerCase().includes($scope.searchQuery.toLowerCase());
-                });
-            };
+        // Function to save customers to localStorage
+        function saveCustomers() {
+            localStorage.setItem('customers', JSON.stringify($scope.customers));
+        }
 
-            $scope.selectedCity = ''; // For the city dropdown
+        // Pagination
+        $scope.currentPage = 1;
+        $scope.itemsPerPage = 5;
+        $scope.totalItems = $scope.customers.length;
+
+        // Sorting
+        $scope.sortField = 'name';
+        $scope.sortReverse = false;
+
+        // Filters
+        $scope.filters = {
+            searchQuery: '',
+            selectedCity: '',
+            selectedStatus: ''
         };
 
-        // Function to add a new customer
+        // Available statuses
+        $scope.statuses = ['active', 'inactive'];
+
+        // Reset all filters
+        $scope.resetFilters = function () {
+            $scope.filters = {
+                searchQuery: '',
+                selectedCity: '',
+                selectedStatus: ''
+            };
+            $scope.currentPage = 1;
+            $scope.sortField = 'id';
+            $scope.sortReverse = false;
+        };
+
+        // Get filtered and sorted customers
+        $scope.getFilteredCustomers = function () {
+            return $scope.customers
+                .filter(function (customer) {
+                    // Search query filter
+                    var matchesSearch = !$scope.filters.searchQuery ||
+                        customer.name.toLowerCase().includes($scope.filters.searchQuery.toLowerCase()) ||
+                        customer.email.toLowerCase().includes($scope.filters.searchQuery.toLowerCase()) ||
+                        customer.city.toLowerCase().includes($scope.filters.searchQuery.toLowerCase());
+
+                    // City filter
+                    var matchesCity = !$scope.filters.selectedCity ||
+                        customer.city === $scope.filters.selectedCity;
+
+                    // Status filter
+                    var matchesStatus = !$scope.filters.selectedStatus ||
+                        customer.status === $scope.filters.selectedStatus;
+
+                    return matchesSearch && matchesCity && matchesStatus;
+                })
+                .sort((a, b) => {
+                    // Always sort by ID first to maintain consistent order
+                    if (a.id < b.id) return -1;
+                    if (a.id > b.id) return 1;
+
+                    // Apply user-selected sorting
+                    var aValue = a[$scope.sortField];
+                    var bValue = b[$scope.sortField];
+                    if (typeof aValue === 'string') {
+                        aValue = aValue.toLowerCase();
+                        bValue = bValue.toLowerCase();
+                    }
+                    return $scope.sortReverse ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+                });
+        };
+
+        // Get paginated customers
+        $scope.getPaginatedCustomers = function () {
+            var filtered = $scope.getFilteredCustomers();
+
+            // Update total for pagination
+            $scope.totalItems = filtered.length;
+
+            // Get page slice
+            var startIndex = ($scope.currentPage - 1) * $scope.itemsPerPage;
+            return filtered.slice(startIndex, startIndex + $scope.itemsPerPage);
+        };
+
+        // Sort function
+        $scope.sortBy = function (field) {
+            if ($scope.sortField === field) {
+                $scope.sortReverse = !$scope.sortReverse;
+            } else {
+                $scope.sortField = field;
+                $scope.sortReverse = false;
+            }
+        };
+
+        // Edit customer
+        $scope.editCustomer = function (customer) {
+            $scope.editingCustomer = angular.copy(customer);
+            $scope.isEditing = true;
+        };
+
+        // Save edited customer
+        $scope.saveCustomer = function () {
+            if ($scope.editingCustomer) {
+                var index = $scope.customers.findIndex(c => c.id === $scope.editingCustomer.id);
+                if (index !== -1) {
+                    $scope.customers[index] = angular.copy($scope.editingCustomer);
+                    saveCustomers(); // Save to localStorage
+                }
+                $scope.isEditing = false;
+                $scope.editingCustomer = null;
+            }
+        };
+
+        // Delete customer with confirmation
+        $scope.deleteCustomer = function (customer) {
+            if (confirm('Are you sure you want to delete ' + customer.name + '?')) {
+                var index = $scope.customers.findIndex(c => c.id === customer.id);
+                if (index !== -1) {
+                    $scope.customers.splice(index, 1);
+                    $scope.totalItems = $scope.customers.length;
+                    saveCustomers(); // Save to localStorage
+                }
+            }
+        };
+
+        // Add new customer
         $scope.addCustomer = function (newCustomer) {
             if (newCustomer && newCustomer.name && newCustomer.email && newCustomer.city) {
-                const nextId = $scope.customers.length + 1;
-                newCustomer.id = nextId; // Assign an ID to the new customer
-                $scope.customers.push(newCustomer);
-                $scope.newCustomer = {}; // Clear the form
+                // Find the highest existing ID and increment by 1
+                const maxId = Math.max(...$scope.customers.map(c => c.id), 0);
+                const nextId = maxId + 1;
+
+                const customerToAdd = {
+                    ...newCustomer,
+                    id: nextId,
+                    registrationDate: new Date(),
+                    status: 'active'
+                };
+
+                $scope.customers.push(customerToAdd);
+                saveCustomers(); // Save to localStorage
+
+                $scope.newCustomer = {};
+                $scope.totalItems = $scope.customers.length;
+
+                // If adding a new customer would create a new page, go to that page
+                const totalPages = Math.ceil($scope.totalItems / $scope.itemsPerPage);
+                $scope.currentPage = totalPages;
             } else {
                 alert('Please fill out all fields!');
             }
         };
-
-        // Log a message to confirm controller is working
-        console.log('CustomerController initialized');
     }]);

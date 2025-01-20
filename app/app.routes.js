@@ -11,14 +11,8 @@ angular.module('customerApp')
             })
             .otherwise({ redirectTo: '/' });
 
-        // HTML5 Mode Configuration
-        $locationProvider.html5Mode({
-            enabled: true,
-            requireBase: true
-        });
-    }])
-    .controller('NavController', ['$scope', '$location', function($scope, $location) {
-        $scope.isActive = function(viewLocation) {
-            return viewLocation === $location.path();
-        };
+       
+        // Use hash-based routing instead of HTML5 mode
+        $locationProvider.html5Mode(false);
+        $locationProvider.hashPrefix('');
     }]);
