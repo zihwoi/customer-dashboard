@@ -1,0 +1,94 @@
+/* Add these styles to your dashboard.css */
+
+/* Dashboard Title Styles */
+.dashboard-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+    color: #666;
+    margin-bottom: 2rem;
+}
+
+/* Search and Filter Styles */
+.search-container {
+    position: relative;
+}
+
+.search-container input {
+    padding-right: 30px;
+}
+
+/* Table Styles */
+.table-responsive {
+    margin-top: 1rem;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Form Control Styles */
+.form-control {
+    border: 1px solid #dce1e4;
+    border-radius: 4px;
+    padding: 0.5rem 0.75rem;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 10px;
+    }
+    
+    .card {
+        margin-bottom: 15px;
+    }
+    
+    .table-responsive {
+        border: 0;
+    }
+}

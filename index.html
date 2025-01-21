@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customer Dashboard</title>
+    
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="app/assets/css/dashboard.css">
 </head>
 
 <body>
@@ -24,7 +26,8 @@
                         <a class="nav-link" href="#/" ng-class="{ active: isActive('/') }">Dashboard</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#/customers" ng-class="{ active: isActive('/customers') }">Customer List</a>
+                        <a class="nav-link" href="#/customers" ng-class="{ active: isActive('/customers') }">Customer
+                            List</a>
                     </li>
                 </ul>
             </div>
@@ -42,7 +45,16 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="app/app.module.js"></script>
     <script src="app/app.routes.js"></script>
-    <script src="app/controllers/main.controller.js"></script> 
+    <script src="app/controllers/main.controller.js"></script>
     <script src="app/controllers/customer.controller.js"></script>
+
+
+    <script src="app/components/dashboard/dashboard.component.js"></script>
+    <script src="app/shared/directives/charts/line-chart.directive.js"></script>
+    <script src="app/shared/directives/charts/pie-chart.directive.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
+
 </html>
