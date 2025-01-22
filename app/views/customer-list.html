@@ -147,6 +147,7 @@
                     </td>
                     <td>{{ customer.registrationDate | date:'mediumDate' }}</td>
                     <td>
+                        <a href="#/customers/{{customer.id}}" class="btn btn-info btn-sm">View</a>
                         <button class="btn btn-warning btn-sm" ng-click="editCustomer(customer)">Edit</button>
                         <button class="btn btn-danger btn-sm ms-1" ng-click="deleteCustomer(customer)">Delete</button>
                     </td>
@@ -155,6 +156,10 @@
             </tbody>
         </table>
     </div>
+
+  <!--   <div class="debug-info">
+        <pre>{{customers | json}}</pre>
+    </div> -->
 
     <div class="mb-3">
         <button class="btn btn-primary" ng-click="exportCustomers()">

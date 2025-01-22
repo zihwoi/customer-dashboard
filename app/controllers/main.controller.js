@@ -21,4 +21,19 @@ angular
         console.log('Main Controller is loaded!');
         console.log('Dashboard Stats:', $scope.dashboardStats);
 
+         // Update dashboard stats based on customers data
+         $scope.$watch('customers', function(newVal) {
+            if (newVal) {
+                $scope.dashboardStats.totalCustomers = newVal.length;
+                $scope.dashboardStats.activeSubscriptions = newVal.filter(c => c.status === 'active').length;
+                
+                // Calculate new customers today
+                const today = new Date();
+                $scope.dashboardStats.newCustomersToday = newVal.filter(c => {
+                    const customerDate = new Date(c.registrationDate);
+                    return customerDate.toDateString() === today.toDateString();
+                }).length;
+            }
+        }, true);
+        
     }]);
