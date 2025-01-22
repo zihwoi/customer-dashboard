@@ -79,6 +79,11 @@
         <table class="table table-bordered table-hover">
             <thead>
                 <tr>
+                    <th>
+                        <input type="checkbox" 
+                               ng-model="selectAll" 
+                               ng-change="toggleSelectAll()"> ★
+                    </th>
                     <th>ID</th>
                     <th>
                         <a href="" ng-click="sortBy('name')">
@@ -135,6 +140,13 @@
                 </tr>
                 
                 <tr ng-repeat="customer in getPaginatedCustomers()">
+                    <!-- Add this as your first td -->
+                    <td>
+                        <input type="checkbox" 
+                               ng-model="customer.selected" 
+                               ng-change="updateSelection(customer)"
+                               ng-checked="selectedCustomers.includes(customer.id)">
+                    </td>
                     <td>{{ customer.id }}</td>
                     <td>{{ customer.name }}</td>
                     <td>{{ customer.email }}</td>
@@ -161,7 +173,7 @@
         <pre>{{customers | json}}</pre>
     </div> -->
 
-    <div class="mb-3">
+    <div class="mb-3 export-button-container ">
         <button class="btn btn-primary" ng-click="exportCustomers()">
             Export Customers
         </button>
