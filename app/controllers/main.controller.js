@@ -35,5 +35,16 @@ angular
                 }).length;
             }
         }, true);
+
+         // Reset all filters
+         $scope.resetFilters = function () {
+            $scope.filters = {
+                searchQuery: '',
+                selectedCity: '',
+            };
+            $scope.currentPage = 1;
+            $scope.sortField = 'id';
+            $scope.sortReverse = false;
+        };
         
     }]);
