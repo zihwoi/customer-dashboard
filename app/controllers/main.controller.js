@@ -18,5 +18,7 @@ angular
         };
 
         // Log a message to the console to confirm controller is working
-        console.log('MainController initialized');
+        console.log('Main Controller is loaded!');
+        console.log('Dashboard Stats:', $scope.dashboardStats);
+
     }]);

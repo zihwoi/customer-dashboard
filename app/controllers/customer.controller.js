@@ -4,6 +4,7 @@ angular
 
         var storedCustomers = localStorage.getItem('customers');
 
+    
         // Data: Customer List
         $scope.customers = storedCustomers ? JSON.parse(storedCustomers) : [
             { id: 1, name: 'John Doe', email: 'john@example.com', city: 'New York', status: 'active', registrationDate: new Date('2024-01-15') },
@@ -12,6 +13,9 @@ angular
             { id: 4, name: 'Lucy Brown', email: 'lucy@example.com', city: 'New York', status: 'active', registrationDate: new Date('2024-01-18') },
             { id: 5, name: 'Ethan Green', email: 'ethan@example.com', city: 'Los Angeles', status: 'inactive', registrationDate: new Date('2024-01-19') }
         ];
+
+
+
 
         // Convert stored dates back to Date objects
         $scope.customers.forEach(customer => {
@@ -53,6 +57,10 @@ angular
             $scope.sortField = 'id';
             $scope.sortReverse = false;
         };
+
+        // Extract unique cities from customer data for filtering
+        $scope.cities = [...new Set($scope.customers.map(customer => customer.city))];
+        $scope.cities.unshift(''); // Add empty option for city filter
 
         // Get filtered and sorted customers
         $scope.getFilteredCustomers = function () {
@@ -170,4 +178,23 @@ angular
                 alert('Please fill out all fields!');
             }
         };
+        
+        // Function to get the badge class based on the status
+        $scope.getStatusBadgeClass = function(status) {
+            return {
+                'bg-success': status === 'active',
+                'bg-secondary': status === 'inactive',
+                'bg-warning': status === 'pending'
+            };
+        };
+
+        // Function to get the icon class based on the status
+        $scope.getStatusIconClass = function(status) {
+            return {
+                'active': 'bi-check-circle',
+                'inactive': 'bi-x-circle',
+                'pending': 'bi-hourglass-split'
+            }[status] || 'bi-question-circle'; // default icon for unknown status
+        };
+
     }]);

@@ -9,6 +9,10 @@ angular.module('customerApp')
                 templateUrl: 'app/views/customer-list.html',
                 controller: 'CustomerController'
             })
+            .when('/customers/:id', {
+                templateUrl: 'app/views/customer-detail.html',
+                controller: 'CustomerDetailController'
+            })
             .otherwise({ redirectTo: '/' });
 
        
@@ -16,3 +20,5 @@ angular.module('customerApp')
         $locationProvider.html5Mode(false);
         $locationProvider.hashPrefix('');
     }]);
+
+    

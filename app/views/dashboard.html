@@ -3,7 +3,7 @@
     <div ng-controller="MainController">
         <h1 class="dashboard-title">Customer Dashboard</h1>
         <p class="dashboard-subtitle">{{ message }}</p>
-        
+
         <div class="row mb-4">
             <div class="col-md-4">
                 <div class="card">
@@ -37,27 +37,24 @@
         <div class="card mb-4">
             <div class="card-body">
                 <h5 class="card-title">Customer Management</h5>
-                
+
                 <!-- Search and Filters -->
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <div class="search-container">
-                            <input type="text" 
-                                   class="form-control" 
-                                   ng-model="searchQuery" 
-                                   placeholder="Search by name, email, or city">
+                            <input type="text" class="form-control" ng-model="searchQuery"
+                                placeholder="Search by name, email, or city">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <select ng-model="selectedCity" class="form-control">
                             <option value="">Select City</option>
-                            <option ng-repeat="city in ['New York', 'Los Angeles', 'Chicago']" 
-                                    value="{{city}}">{{city}}</option>
+                            <option ng-repeat="city in ['New York', 'Los Angeles', 'Chicago']" value="{{city}}">{{city}}
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-secondary w-100" 
-                                ng-click="resetFilters()">Reset Filters</button>
+                        <button class="btn btn-secondary w-100" ng-click="resetFilters()">Reset Filters</button>
                     </div>
                 </div>
 
@@ -70,6 +67,8 @@
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>City</th>
+                                <th>Status</th>
+                                <th>Registration Date</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -78,6 +77,8 @@
                                 <td>{{ customer.name }}</td>
                                 <td>{{ customer.email }}</td>
                                 <td>{{ customer.city }}</td>
+                                <td>{{ customer.status }}</td>
+                                <td>{{ customer.registrationDate | date:'shortDate' }}</td>
                             </tr>
                         </tbody>
                     </table>

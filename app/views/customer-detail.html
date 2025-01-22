@@ -1,0 +1,74 @@
+<!-- customer-detail.html -->
+<div ng-controller="CustomerDetailController" class="customer-detail">
+    <div class="card">
+        <div class="card-header">
+            <h2>Customer Details</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Basic Information</h3>
+                    <p><strong>Name:</strong> {{customer.name}}</p>
+                    <p><strong>Email:</strong> {{customer.email}}</p>
+                    <p><strong>City:</strong> {{customer.city}}</p>
+                    <p><strong>Status:</strong> {{customer.status}}</p>
+                    <p><strong>Registration Date:</strong> {{customer.registrationDate | date:'mediumDate'}}</p>
+                </div>
+                <div class="col-md-6">
+                    <h3>Purchase History</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="purchase in purchaseHistory">
+                                <td>{{purchase.date | date:'shortDate'}}</td>
+                                <td>{{purchase.product}}</td>
+                                <td>${{purchase.amount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- login.html -->
+<div class="login-container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Login</h2>
+        </div>
+        <div class="card-body">
+            <form ng-submit="login()">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" ng-model="credentials.username">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" ng-model="credentials.password">
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- notifications.html -->
+<div class="notifications-container">
+    <div ng-repeat="notification in notifications" 
+         class="alert" 
+         ng-class="{'alert-info': notification.type === 'info', 
+                   'alert-success': notification.type === 'success',
+                   'alert-warning': notification.type === 'warning',
+                   'alert-danger': notification.type === 'danger'}">
+        {{notification.message}}
+        <button type="button" class="btn-close" ng-click="dismissNotification(notification.id)"></button>
+    </div>
+</div>

@@ -1,0 +1,9 @@
+<!-- app/components/notifications/notifications.html -->
+<div class="notifications-wrapper" style="position: fixed; top: 20px; right: 20px; z-index: 1000; width: 300px;">
+    <div ng-repeat="notification in notifications" 
+         class="alert alert-{{notification.type}} alert-dismissible fade show" 
+         role="alert">
+        {{notification.message}}
+        <button type="button" class="btn-close" ng-click="dismissNotification(notification.id)"></button>
+    </div>
+</div>

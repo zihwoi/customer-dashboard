@@ -4,8 +4,9 @@
     <!-- Search and Filters -->
     <div class="row mb-3">
         <div class="col-md-4">
-            <input type="text" class="form-control" ng-model="filters.searchQuery"
+            <input type="text" class="form-control" ng-model-options="{ debounce: 300 }" ng-model="filters.searchQuery"
                 placeholder="Search by name, email, or city">
+
         </div>
         <div class="col-md-3">
             <select ng-model="filters.selectedCity" class="form-control">
@@ -128,14 +129,19 @@
                 </tr>
             </thead>
             <tbody>
+
+                <tr ng-if="getPaginatedCustomers().length === 0">
+                    <td colspan="7" class="text-center">No customers found.</td>
+                </tr>
+                
                 <tr ng-repeat="customer in getPaginatedCustomers()">
                     <td>{{ customer.id }}</td>
                     <td>{{ customer.name }}</td>
                     <td>{{ customer.email }}</td>
                     <td>{{ customer.city }}</td>
                     <td>
-                        <span class="badge"
-                            ng-class="{'bg-success': customer.status === 'active', 'bg-secondary': customer.status === 'inactive'}">
+                        <span class="badge" ng-class="getStatusBadgeClass(customer.status)" title="Customer status: {{ customer.status }}">
+                            <i class="bi" ng-class="getStatusIconClass(customer.status)"></i>
                             {{ customer.status }}
                         </span>
                     </td>
@@ -145,8 +151,15 @@
                         <button class="btn btn-danger btn-sm ms-1" ng-click="deleteCustomer(customer)">Delete</button>
                     </td>
                 </tr>
+                
             </tbody>
         </table>
+    </div>
+
+    <div class="mb-3">
+        <button class="btn btn-primary" ng-click="exportCustomers()">
+            Export Customers
+        </button>
     </div>
 
     <!-- Pagination -->
