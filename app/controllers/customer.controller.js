@@ -23,6 +23,16 @@ angular
             localStorage.setItem('customers', JSON.stringify($scope.customers));
         }
 
+        $scope.validateEmail = function(email) {
+            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        };
+        
+        $scope.formatPhoneNumber = function(phone) {
+            // Assuming US phone format
+            return phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
+        };
+
         // Pagination
         $scope.currentPage = 1;
         $scope.itemsPerPage = 5;
@@ -86,47 +96,6 @@ angular
                 });
         };
 
-        function confirmAndExecute(message, callback) {
-            if (confirm(message)) {
-                callback();
-            }
-        }
-
-        $scope.exportCustomers = function() {
-            try {
-                var filteredCustomers = $scope.getFilteredCustomers();
-                if (filteredCustomers.length === 0) {
-                    alert('No customers to export!');
-                    return;
-                }
-
-                // Format data for Excel
-                var excelData = filteredCustomers.map(customer => ({
-                    ID: customer.id,
-                    Name: customer.name,
-                    Email: customer.email,
-                    City: customer.city,
-                    Status: customer.status,
-                    'Registration Date': customer.registrationDate.toLocaleDateString()
-                }));
-
-                // Create worksheet
-                var ws = XLSX.utils.json_to_sheet(excelData);
-
-                // Create workbook and append worksheet
-                var wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, ws, "Customers");
-
-                // Save file
-                XLSX.writeFile(wb, "customers_export_" + new Date().toISOString().slice(0, 10) + ".xlsx");
-                
-                console.log('Export completed successfully');
-            } catch (error) {
-                console.error('Error exporting:', error);
-                alert('Error exporting customers. Please try again.');
-            }
-        };
-
         // Get paginated customers
         $scope.getPaginatedCustomers = function () {
             var filtered = $scope.getFilteredCustomers();
@@ -148,22 +117,6 @@ angular
                 $scope.sortReverse = false;
             }
         };
-
-        // Add this to your controller
-        function logCustomerActivity(action, customerId, details) {
-            var logs = JSON.parse(localStorage.getItem('customerLogs') || '[]');
-            logs.unshift({
-                timestamp: new Date(),
-                action: action,
-                customerId: customerId,
-                details: details
-            });
-
-            // Keep only the last 100 logs
-            logs = logs.slice(0, 100);
-            localStorage.setItem('customerLogs', JSON.stringify(logs));
-        }
-
 
         // Edit customer
         $scope.editCustomer = function (customer) {
@@ -195,16 +148,6 @@ angular
                     saveCustomers(); // Save to localStorage
                 }
             }
-        };
-
-        $scope.validateEmail = function(email) {
-            var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        };
-        
-        $scope.formatPhoneNumber = function(phone) {
-            // Assuming US phone format
-            return phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
         };
 
         // Add new customer
@@ -335,6 +278,62 @@ angular
             }).length;
             
             return stats;
+        };
+
+         // Add this to your controller
+         function logCustomerActivity(action, customerId, details) {
+            var logs = JSON.parse(localStorage.getItem('customerLogs') || '[]');
+            logs.unshift({
+                timestamp: new Date(),
+                action: action,
+                customerId: customerId,
+                details: details
+            });
+
+            // Keep only the last 100 logs
+            logs = logs.slice(0, 100);
+            localStorage.setItem('customerLogs', JSON.stringify(logs));
+        }
+
+        function confirmAndExecute(message, callback) {
+            if (confirm(message)) {
+                callback();
+            }
+        }
+
+        $scope.exportCustomers = function() {
+            try {
+                var filteredCustomers = $scope.getFilteredCustomers();
+                if (filteredCustomers.length === 0) {
+                    alert('No customers to export!');
+                    return;
+                }
+
+                // Format data for Excel
+                var excelData = filteredCustomers.map(customer => ({
+                    ID: customer.id,
+                    Name: customer.name,
+                    Email: customer.email,
+                    City: customer.city,
+                    Status: customer.status,
+                    'Registration Date': customer.registrationDate.toLocaleDateString()
+                }));
+
+                // Create worksheet
+                var ws = XLSX.utils.json_to_sheet(excelData);
+
+                // Create workbook and append worksheet
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Customers");
+
+                // Save file
+                XLSX.writeFile(wb, "customers_export_" + new Date().toISOString().slice(0, 10) + ".xlsx");
+                
+                console.log('Export completed successfully');
+            } catch (error) {
+                console.error('Error exporting:', error);
+                alert('Error exporting customers. Please try again.');
+            }
         };
 
     }]);

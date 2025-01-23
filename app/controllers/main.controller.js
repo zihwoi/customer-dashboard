@@ -7,9 +7,9 @@ angular
         
         // Example: Add dashboard statistics or other data
         $scope.dashboardStats = {
-            totalCustomers: 120,
-            newCustomersToday: 5,
-            activeSubscriptions: 95
+            totalCustomers: 0,
+            newCustomersToday: 0,
+            activeSubscriptions: 0
         };
 
         // Example: Function to greet users
@@ -17,34 +17,23 @@ angular
             return `Hello! ${$scope.message}`;
         };
 
-        // Log a message to the console to confirm controller is working
-        console.log('Main Controller is loaded!');
-        console.log('Dashboard Stats:', $scope.dashboardStats);
-
-         // Update dashboard stats based on customers data
-         $scope.$watch('customers', function(newVal) {
-            if (newVal) {
-                $scope.dashboardStats.totalCustomers = newVal.length;
-                $scope.dashboardStats.activeSubscriptions = newVal.filter(c => c.status === 'active').length;
-                
-                // Calculate new customers today
-                const today = new Date();
-                $scope.dashboardStats.newCustomersToday = newVal.filter(c => {
-                    const customerDate = new Date(c.registrationDate);
-                    return customerDate.toDateString() === today.toDateString();
-                }).length;
-            }
-        }, true);
-
-         // Reset all filters
-         $scope.resetFilters = function () {
-            $scope.filters = {
-                searchQuery: '',
-                selectedCity: '',
-            };
-            $scope.currentPage = 1;
-            $scope.sortField = 'id';
-            $scope.sortReverse = false;
-        };
         
+        // Available statuses
+        $scope.statuses = ['active', 'inactive', 'pending'];
+
+        // Direct watch on customers array from CustomerController
+        $scope.$watch('customers', function(newCustomers) {
+            if (newCustomers && newCustomers.length > 0) {
+                const today = new Date();
+
+                $scope.dashboardStats = {
+                    totalCustomers: newCustomers.length,
+                    activeSubscriptions: newCustomers.filter(c => c.status === 'active').length,
+                    newCustomersToday: newCustomers.filter(c => {
+                        const customerDate = new Date(c.registrationDate);
+                        return customerDate.toDateString() === today.toDateString();
+                    }).length
+                };
+            }
+        }, true);  // Deep watch to detect changes in customer array
     }]);

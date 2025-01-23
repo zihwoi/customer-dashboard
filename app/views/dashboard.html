@@ -40,17 +40,21 @@
 
                 <!-- Search and Filters -->
                 <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="search-container">
-                            <input type="text" class="form-control" ng-model="searchQuery"
-                                placeholder="Search by name, email, or city">
-                        </div>
-                    </div>
                     <div class="col-md-4">
-                        <select ng-model="selectedCity" class="form-control">
-                            <option value="">Select City</option>
-                            <option ng-repeat="city in ['New York', 'Los Angeles', 'Chicago']" value="{{city}}">{{city}}
-                            </option>
+                        <input type="text" class="form-control" 
+                               ng-model="filters.searchQuery"
+                               placeholder="Search by name, email, or city">
+                    </div>
+                    <div class="col-md-3">
+                        <select ng-model="filters.selectedCity" class="form-control">
+                            <option value="">All Cities</option>
+                            <option ng-repeat="city in cities">{{city}}</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select ng-model="filters.selectedStatus" class="form-control">
+                            <option value="">All Statuses</option>
+                            <option ng-repeat="status in statuses">{{status}}</option>
                         </select>
                     </div>
                     <div class="col-md-2">
@@ -61,7 +65,7 @@
                 <!-- Customer Table -->
                 <div class="table-responsive">
                     <table class="table table-hover">
-                        <thead class="table-light">
+                        <thead>
                             <tr>
                                 <th>ID</th>
                                 <th>Name</th>
@@ -72,7 +76,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="customer in customers | filter: searchQuery | filter: {city: selectedCity}">
+                            <tr ng-repeat="customer in getPaginatedCustomers() track by customer.id">
                                 <td>{{ customer.id }}</td>
                                 <td>{{ customer.name }}</td>
                                 <td>{{ customer.email }}</td>
@@ -82,6 +86,26 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        Showing {{ ((currentPage - 1) * itemsPerPage) + 1 }} to
+                        {{ Math.min(currentPage * itemsPerPage, totalItems) }} of {{ totalItems }} entries
+                    </div>
+                    <div>
+                        <button class="btn btn-secondary me-2" 
+                                ng-disabled="currentPage === 1"
+                                ng-click="currentPage = currentPage - 1">
+                            Previous
+                        </button>
+                        <button class="btn btn-secondary" 
+                                ng-disabled="currentPage >= (totalItems / itemsPerPage)"
+                                ng-click="currentPage = currentPage + 1">
+                            Next
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

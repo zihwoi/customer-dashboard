@@ -139,7 +139,7 @@
                     <td colspan="7" class="text-center">No customers found.</td>
                 </tr>
                 
-                <tr ng-repeat="customer in getPaginatedCustomers()">
+                <tr ng-repeat="customer in getPaginatedCustomers() track by customer.id">
                     <!-- Add this as your first td -->
                     <td>
                         <input type="checkbox" 
