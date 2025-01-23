@@ -141,12 +141,8 @@ angular
         // Delete customer with confirmation
         $scope.deleteCustomer = function (customer) {
             if (confirm('Are you sure you want to delete ' + customer.name + '?')) {
-                var index = $scope.customers.findIndex(c => c.id === customer.id);
-                if (index !== -1) {
-                    $scope.customers.splice(index, 1);
-                    $scope.totalItems = $scope.customers.length;
-                    saveCustomers(); // Save to localStorage
-                }
+                $scope.customers = $scope.customers.filter(c => c.id !== customer.id);
+                saveCustomers();
             }
         };
 
@@ -159,8 +155,10 @@ angular
 
             if (newCustomer && newCustomer.name && newCustomer.email && newCustomer.city) {
                 // Find the highest existing ID and increment by 1
-                const maxId = Math.max(...$scope.customers.map(c => c.id), 0);
-                const nextId = maxId + 1;
+                /* const maxId = Math.max(...$scope.customers.map(c => c.id), 0); */
+                const nextId = $scope.customers.length > 0 
+                ? Math.max(...$scope.customers.map(c => c.id)) + 1 
+                : 1;
 
                 const customerToAdd = {
                     ...newCustomer,
