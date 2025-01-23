@@ -1,4 +1,4 @@
-/* angular.module('customerApp')
+ angular.module('customerApp')
     .service('CustomerService', function() {
         return {
             exportToCSV: function(customers) {
@@ -27,4 +27,4 @@
             }
         };
     });
- */
+ 
