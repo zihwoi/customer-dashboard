@@ -1,6 +1,6 @@
 angular
     .module('customerApp')
-    .controller('CustomerController', ['$scope', function ($scope) {
+    .controller('CustomerController', ['$scope', 'CustomerService', function ($scope, CustomerService) {
 
         var storedCustomers = localStorage.getItem('customers');
 
@@ -13,6 +13,9 @@ angular
             { id: 5, name: 'Ethan Green', email: 'ethan@example.com', city: 'Los Angeles', status: 'pending', registrationDate: new Date('2024-01-19') }
         ];
 
+        // Update CustomerService with initial customers
+        CustomerService.setCustomers($scope.customers);
+
         // Convert stored dates back to Date objects
         $scope.customers.forEach(customer => {
             customer.registrationDate = new Date(customer.registrationDate);
@@ -21,14 +24,15 @@ angular
         // Function to save customers to localStorage
         function saveCustomers() {
             localStorage.setItem('customers', JSON.stringify($scope.customers));
+            CustomerService.updateCustomers($scope.customers);
         }
 
-        $scope.validateEmail = function(email) {
+        $scope.validateEmail = function (email) {
             var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return re.test(email);
         };
-        
-        $scope.formatPhoneNumber = function(phone) {
+
+        $scope.formatPhoneNumber = function (phone) {
             // Assuming US phone format
             return phone.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3');
         };
@@ -37,6 +41,31 @@ angular
         $scope.currentPage = 1;
         $scope.itemsPerPage = 5;
         $scope.totalItems = $scope.customers.length;
+
+        $scope.getPageNumbers = function() {
+            var pages = [];
+            var totalPages = Math.ceil($scope.totalItems / $scope.itemsPerPage);
+            
+            // Show first few pages, current page, and last few pages
+            var startPage = Math.max(1, $scope.currentPage - 2);
+            var endPage = Math.min(totalPages, $scope.currentPage + 2);
+            
+            if (startPage > 1) {
+                pages.push(1);
+                if (startPage > 2) pages.push('...');
+            }
+            
+            for (var i = startPage; i <= endPage; i++) {
+                pages.push(i);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) pages.push('...');
+                pages.push(totalPages);
+            }
+            
+            return pages;
+        };
 
         // Sorting
         $scope.sortField = 'name';
@@ -103,6 +132,12 @@ angular
             // Update total for pagination
             $scope.totalItems = filtered.length;
 
+            // Calculate total pages
+            $scope.totalPages = Math.ceil($scope.totalItems / $scope.itemsPerPage);
+
+            // Ensure current page is within valid range
+            $scope.currentPage = Math.max(1, Math.min($scope.currentPage, $scope.totalPages));
+
             // Get page slice
             var startIndex = ($scope.currentPage - 1) * $scope.itemsPerPage;
             return filtered.slice(startIndex, startIndex + $scope.itemsPerPage);
@@ -138,14 +173,6 @@ angular
             }
         };
 
-        // Delete customer with confirmation
-        $scope.deleteCustomer = function (customer) {
-            if (confirm('Are you sure you want to delete ' + customer.name + '?')) {
-                $scope.customers = $scope.customers.filter(c => c.id !== customer.id);
-                saveCustomers();
-            }
-        };
-
         // Add new customer
         $scope.addCustomer = function (newCustomer) {
             if (!$scope.validateEmail(newCustomer.email)) {
@@ -154,11 +181,9 @@ angular
             }
 
             if (newCustomer && newCustomer.name && newCustomer.email && newCustomer.city) {
-                // Find the highest existing ID and increment by 1
-                /* const maxId = Math.max(...$scope.customers.map(c => c.id), 0); */
-                const nextId = $scope.customers.length > 0 
-                ? Math.max(...$scope.customers.map(c => c.id)) + 1 
-                : 1;
+                const nextId = $scope.customers.length > 0
+                    ? Math.max(...$scope.customers.map(c => c.id)) + 1
+                    : 1;
 
                 const customerToAdd = {
                     ...newCustomer,
@@ -168,64 +193,128 @@ angular
                 };
 
                 $scope.customers.push(customerToAdd);
-                saveCustomers(); // Save to localStorage
-
-                $scope.newCustomer = {};
-                $scope.totalItems = $scope.customers.length;
-
-                // If adding a new customer would create a new page, go to that page
-                const totalPages = Math.ceil($scope.totalItems / $scope.itemsPerPage);
-                $scope.currentPage = totalPages;
+                saveCustomers(); // This now updates both localStorage and CustomerService
             } else {
                 alert('Please fill out all fields!');
             }
         };
-        
 
+        // Delete customer with confirmation
+        $scope.deleteCustomer = function (customer) {
+            if (confirm('Are you sure you want to delete ' + customer.name + '?')) {
+                $scope.customers = $scope.customers.filter(c => c.id !== customer.id);
+                saveCustomers(); // This now updates both localStorage and CustomerService
+            }
+        };
+
+        // Updated bulkDelete method with enhanced error handling and logging
         $scope.bulkDelete = function () {
+            // Check if any customers are selected
             if ($scope.selectedCustomers.length === 0) {
                 alert('Please select customers to delete');
                 return;
             }
 
+            // Confirm deletion with user
             if (confirm('Are you sure you want to delete ' + $scope.selectedCustomers.length + ' customers?')) {
+                // Log the bulk delete action
+                logCustomerActivity('bulk_delete', null, `Deleting ${$scope.selectedCustomers.length} customers`);
+
+                // Filter out selected customers
+                const initialCount = $scope.customers.length;
                 $scope.customers = $scope.customers.filter(c => !$scope.selectedCustomers.includes(c.id));
+
+                // Verify deletion
+                const deletedCount = initialCount - $scope.customers.length;
+
+                // Save changes and reset selection
                 saveCustomers();
                 $scope.selectedCustomers = [];
                 $scope.selectAll = false;
+
+                // Provide feedback about deletion
+                alert(`Successfully deleted ${deletedCount} customers`);
             }
         };
 
+        // Updated bulkUpdateStatus method with enhanced error handling and logging
         $scope.bulkUpdateStatus = function (newStatus) {
+            // Validate status input
+            if (!$scope.statuses.includes(newStatus)) {
+                alert('Invalid status selected');
+                return;
+            }
+
+            // Check if any customers are selected
             if ($scope.selectedCustomers.length === 0) {
                 alert('Please select customers to update');
                 return;
             }
 
-            $scope.customers = $scope.customers.map(customer => {
-                if ($scope.selectedCustomers.includes(customer.id)) {
-                    return { ...customer, status: newStatus };
-                }
-                return customer;
-            });
+            // Confirm status update with user
+            if (confirm(`Are you sure you want to update status to '${newStatus}' for ${$scope.selectedCustomers.length} customers?`)) {
+                // Log the bulk status update action
+                logCustomerActivity('bulk_status_update', null, `Updating ${$scope.selectedCustomers.length} customers to ${newStatus} status`);
 
-            saveCustomers();
-            $scope.selectedCustomers = [];
-            $scope.selectAll = false;
+                // Track the number of customers updated
+                let updatedCount = 0;
+
+                // Update status for selected customers
+                $scope.customers = $scope.customers.map(customer => {
+                    if ($scope.selectedCustomers.includes(customer.id)) {
+                        updatedCount++;
+                        return { ...customer, status: newStatus };
+                    }
+                    return customer;
+                });
+
+                // Save changes and reset selection
+                saveCustomers();
+                $scope.selectedCustomers = [];
+                $scope.selectAll = false;
+
+                // Provide feedback about status update
+                alert(`Successfully updated status for ${updatedCount} customers`);
+            }
         };
 
-        $scope.selectedCustomers = [];
-        $scope.selectAll = false;
-
-        // Add this new function
+        // Enhance updateSelection method with additional validation
         $scope.updateSelection = function (customer) {
+            // Validate customer input
+            if (!customer || !customer.id) {
+                console.error('Invalid customer object');
+                return;
+            }
+
+            // Find the index of the customer in selected customers
             const index = $scope.selectedCustomers.indexOf(customer.id);
+
+            // Toggle selection
             if (index > -1) {
+                // Remove customer from selection
                 $scope.selectedCustomers.splice(index, 1);
             } else {
+                // Add customer to selection
                 $scope.selectedCustomers.push(customer.id);
             }
-            $scope.selectAll = $scope.selectedCustomers.length === $scope.getFilteredCustomers().length;
+
+            // Update select all status based on filtered customers
+            const filteredCustomers = $scope.getFilteredCustomers();
+            $scope.selectAll = $scope.selectedCustomers.length === filteredCustomers.length;
+
+            // Optional: Log selection changes for detailed tracking
+            logCustomerActivity('selection_update', customer.id,
+                `Customer ${customer.id} ${index > -1 ? 'deselected' : 'selected'}`
+            );
+        };
+
+        // Optional: Add a method to reset selection
+        $scope.resetSelection = function () {
+            $scope.selectedCustomers = [];
+            $scope.selectAll = false;
+
+            // Log selection reset
+            logCustomerActivity('selection_reset', null, 'Selection cleared');
         };
 
         // Add these functions
@@ -251,8 +340,8 @@ angular
                 'pending': 'bi-hourglass-split'
             }[status] || 'bi-question-circle'; // default icon for unknown status
         };
-        
-        $scope.getCustomerStats = function() {
+
+        $scope.getCustomerStats = function () {
             var stats = {
                 totalCustomers: $scope.customers.length,
                 activeCustomers: $scope.customers.filter(c => c.status === 'active').length,
@@ -261,12 +350,12 @@ angular
                 cityCounts: {},
                 newCustomersThisMonth: 0
             };
-            
+
             // Calculate city distribution
             $scope.customers.forEach(c => {
                 stats.cityCounts[c.city] = (stats.cityCounts[c.city] || 0) + 1;
             });
-            
+
             // Calculate new customers this month
             var thisMonth = new Date().getMonth();
             var thisYear = new Date().getFullYear();
@@ -274,12 +363,12 @@ angular
                 var d = new Date(c.registrationDate);
                 return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
             }).length;
-            
+
             return stats;
         };
 
-         // Add this to your controller
-         function logCustomerActivity(action, customerId, details) {
+        // Add this to your controller
+        function logCustomerActivity(action, customerId, details) {
             var logs = JSON.parse(localStorage.getItem('customerLogs') || '[]');
             logs.unshift({
                 timestamp: new Date(),
@@ -298,8 +387,8 @@ angular
                 callback();
             }
         }
-
-        $scope.exportCustomers = function() {
+        
+        $scope.exportCustomers = function () {
             try {
                 var filteredCustomers = $scope.getFilteredCustomers();
                 if (filteredCustomers.length === 0) {
@@ -326,7 +415,7 @@ angular
 
                 // Save file
                 XLSX.writeFile(wb, "customers_export_" + new Date().toISOString().slice(0, 10) + ".xlsx");
-                
+
                 console.log('Export completed successfully');
             } catch (error) {
                 console.error('Error exporting:', error);

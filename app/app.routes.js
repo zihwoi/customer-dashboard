@@ -13,6 +13,7 @@ angular.module('customerApp')
                 templateUrl: 'app/views/customer-detail.html',
                 controller: 'CustomerDetailController'
             })
+        
             .otherwise({ redirectTo: '/' });
 
        

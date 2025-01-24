@@ -1,27 +1,33 @@
-angular
-    .module('customerApp')
-    .factory('CustomerService', function() {
-        // Shared customer data and methods
-        const service = {
-            customers: [
-                // Example customers; this will dynamically update when new customers are added
-                { id: 1, name: 'John Doe', email: 'john@example.com', city: 'New York', status: 'active', registrationDate: new Date('2024-01-15') },
-                { id: 2, name: 'Jane Smith', email: 'jane@example.com', city: 'Los Angeles', status: 'active', registrationDate: new Date('2024-01-16') },
-                { id: 3, name: 'Sam Wilson', email: 'sam@example.com', city: 'Chicago', status: 'inactive', registrationDate: new Date('2024-01-17') },
-                { id: 4, name: 'Lucy Brown', email: 'lucy@example.com', city: 'New York', status: 'active', registrationDate: new Date('2024-01-18') },
-                { id: 5, name: 'Ethan Green', email: 'ethan@example.com', city: 'Los Angeles', status: 'pending', registrationDate: new Date('2024-01-19') }
-            ],
+angular.module('customerApp')
+.service('CustomerService', function() {
+    var service = this;
+    
+    // Private storage for customers
+    var customers = [];
 
-            // Add a new customer
-            addCustomer: function(customer) {
-                service.customers.push(customer);
-            },
+    // Method to set customers
+    service.setCustomers = function(newCustomers) {
+        customers = newCustomers || [];
+    };
 
-            // Get all customers
-            getCustomers: function() {
-                return service.customers;
-            }
-        };
+    // Method to get customers
+    service.getCustomers = function() {
+        return customers;
+    };
 
-        return service;
-    });
+    // Method to update customers
+    service.updateCustomers = function(updatedCustomers) {
+        customers = updatedCustomers || [];
+    };
+
+    // Additional utility methods
+    service.addCustomer = function(customer) {
+        customers.push(customer);
+    };
+
+    service.removeCustomer = function(customerId) {
+        customers = customers.filter(function(c) {
+            return c.id !== customerId;
+        });
+    };
+});

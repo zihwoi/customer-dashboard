@@ -24,7 +24,7 @@
 </head>
 
 <body>
-    <div ng-controller="NotificationsController">
+   <!--  <div ng-controller="NotificationsController">
         <div class="notifications-wrapper"
             style="position: fixed; top: 20px; right: 20px; z-index: 1000; width: 300px;">
             <div ng-repeat="notification in notifications"
@@ -33,7 +33,7 @@
                 <button type="button" class="btn-close" ng-click="dismissNotification(notification.id)"></button>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -73,12 +73,12 @@
     <script src="app/app.routes.js"></script>
 
     <!-- 3. Services (before controllers) -->
-    <script src="app/services/notification.service.js"></script>
+    <script src="app/services/customer.service.js"></script>
+    
 
     <!-- 4. Controllers -->
     <script src="app/controllers/main.controller.js"></script>
     <script src="app/controllers/customer.controller.js"></script>
-    <script src="app/controllers/notifications.controller.js"></script>
     <script src="app/controllers/customer-detail.controller.js"></script>
 
 

@@ -1,4 +1,4 @@
-angular.module('customerApp')
+/* angular.module('customerApp')
     .controller('NotificationsController', ['$scope', 'NotificationService', 
     function($scope, NotificationService) {
         $scope.notifications = [];
@@ -15,4 +15,4 @@ angular.module('customerApp')
         $scope.dismissNotification = function(id) {
             $scope.notifications = $scope.notifications.filter(n => n.id !== id);
         };
-    }]);
+    }]); */
